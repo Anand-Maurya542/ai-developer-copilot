@@ -25,3 +25,4 @@ The platform interacts with customer private repositories to read code, process 
 
 ## Consequences and Rollback Plan
 - Disconnecting an installation immediately renders all derived API calls invalid and triggers data retention policies.
+

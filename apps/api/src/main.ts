@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module.js';
-import { AllExceptionsFilter } from './common/all-exceptions.filter.js';
+import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/all-exceptions.filter';
 import { loadConfig } from '@copilot/config';
 import { logger } from '@copilot/observability';
 
@@ -46,3 +46,4 @@ bootstrap().catch((err) => {
   logger.error('Failed to start API server', err, { service: 'api' });
   process.exit(1);
 });
+

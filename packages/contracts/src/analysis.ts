@@ -37,3 +37,4 @@ export interface PrAnalysisResult {
   risksIdentified: string[];
   findings: Finding[];
 }
+

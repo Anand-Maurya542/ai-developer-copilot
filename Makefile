@@ -36,3 +36,4 @@ clean:
 	rm -rf dist build .next node_modules/.cache coverage
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
+

@@ -8,7 +8,7 @@ import {
 import { Request, Response } from 'express';
 import { ErrorCode, ApiErrorPayload } from '@copilot/contracts';
 import { logger } from '@copilot/observability';
-import { CORRELATION_ID_HEADER } from './correlation-id.middleware.js';
+import { CORRELATION_ID_HEADER } from './correlation-id.middleware';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -77,3 +77,4 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
   }
 }
+

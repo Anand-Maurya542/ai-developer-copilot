@@ -56,3 +56,4 @@ class SafeFileFilter:
             return False, "OVERSIZED_FILE"
 
         return True, None
+

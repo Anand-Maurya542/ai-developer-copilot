@@ -21,3 +21,4 @@ LLM providers change models, pricing, and terms frequently. Relying directly on 
    - Pre-prompt sanitization: detect and redact known secrets, bearer tokens, AWS keys, and `.env` variables before sending prompt payloads to LLM providers.
    - Explicit system prompt instructions designating repository content as untrusted input.
    - Enterprise guarantee: zero data retention for training from upstream model agreements.
+

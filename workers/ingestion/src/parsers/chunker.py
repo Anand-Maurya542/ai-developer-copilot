@@ -102,3 +102,4 @@ class CodeChunker:
                 curr_start = curr_end - self.overlap_lines + 1
 
         return chunks
+

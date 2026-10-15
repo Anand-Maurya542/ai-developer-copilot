@@ -1,6 +1,6 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { HealthModule } from './modules/health/health.module.js';
-import { CorrelationIdMiddleware } from './common/correlation-id.middleware.js';
+import { HealthModule } from './modules/health/health.module';
+import { CorrelationIdMiddleware } from './common/correlation-id.middleware';
 
 @Module({
   imports: [
@@ -14,3 +14,4 @@ export class AppModule implements NestModule {
     consumer.apply(CorrelationIdMiddleware).forRoutes('*');
   }
 }
+

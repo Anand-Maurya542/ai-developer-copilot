@@ -101,3 +101,4 @@ npm run dev
 - **Strict Multi-Tenancy**: Data isolation is enforced at the Workspace root; no IDOR or cross-tenant exposure is permitted.
 - **Evidence-Grounded**: Answers provide exact file paths and line ranges; the model admits "insufficient evidence" rather than hallucinating APIs or vulnerabilities.
 - **Advisory Reviews**: AI findings are proposals with confidence and rationale. All GitHub write operations require server-side authorization and audit records.
+

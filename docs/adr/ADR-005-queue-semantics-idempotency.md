@@ -25,3 +25,4 @@ Asynchronous background jobs (ingestion, AST chunking, embeddings, PR diff proce
 
 ## Security and Privacy Impact
 - Job payloads carry only IDs and metadata pointers; raw source code or credentials are never stored in queue messages.
+

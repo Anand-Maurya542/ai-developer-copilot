@@ -11,3 +11,4 @@ export function createDbPool(connectionString?: string): pg.Pool {
     connectionTimeoutMillis: 5000,
   });
 }
+

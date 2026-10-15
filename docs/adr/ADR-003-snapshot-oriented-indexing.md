@@ -21,3 +21,4 @@ Codebases change continuously across branches, commits, and force-pushes. In-pla
 ## Consequences
 - Zero downtime during re-indexing.
 - No possibility of partial or broken indexes being queried by end users.
+

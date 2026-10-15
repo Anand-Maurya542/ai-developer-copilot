@@ -32,3 +32,4 @@ Generic AI answers often sound plausible while referring to non-existent functio
 3. **Commit Identity Preservation**:
    - The UI links directly to GitHub permalinks with the explicit `commitSha` (`https://github.com/org/repo/blob/{commitSha}/{path}#L{startLine}-L{endLine}`).
    - Source inspection within the Copilot UI renders the exact code from the indexed snapshot.
+

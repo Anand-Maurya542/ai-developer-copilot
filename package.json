@@ -8,17 +8,17 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "pnpm --parallel --filter \"./apps/*\" dev",
-    "dev:api": "pnpm --filter @copilot/api dev",
-    "dev:web": "pnpm --filter @copilot/web dev",
-    "build": "pnpm --recursive run build",
-    "lint": "pnpm --recursive run lint",
-    "test": "pnpm --recursive run test",
-    "test:unit": "pnpm --recursive run test:unit",
-    "test:integration": "pnpm --recursive run test:integration",
-    "typecheck": "pnpm --recursive run typecheck",
-    "db:migrate": "pnpm --filter @copilot/database migrate",
-    "db:seed": "pnpm --filter @copilot/database seed",
+    "dev": "npm run --workspace=@copilot/web dev",
+    "dev:api": "npm --workspace=@copilot/api run dev",
+    "dev:web": "npm --workspace=@copilot/web run dev",
+    "build": "npm run --workspaces --if-present build",
+    "lint": "npm run --workspaces --if-present lint",
+    "test": "npm run --workspaces --if-present test",
+    "test:unit": "npm run --workspaces --if-present test:unit",
+    "test:integration": "npm run --workspaces --if-present test:integration",
+    "typecheck": "npm run --workspaces --if-present typecheck",
+    "db:migrate": "npm --workspace=@copilot/database run migrate",
+    "db:seed": "npm --workspace=@copilot/database run seed",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md,yml,yaml}\""
   },
@@ -32,3 +32,4 @@
     "node": ">=20.0.0"
   }
 }
+

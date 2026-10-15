@@ -28,3 +28,4 @@ Operating separate systems (e.g. Pinecone/Milvus + Elasticsearch + relational DB
 
 ## Validation & Revisit Trigger
 Revisit when code chunk count exceeds 50 million chunks per database cluster or when p95 hybrid query latency exceeds 500ms under expected concurrency.
+

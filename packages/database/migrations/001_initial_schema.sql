@@ -277,3 +277,4 @@ CREATE TABLE IF NOT EXISTS usage_records (
 );
 
 CREATE INDEX IF NOT EXISTS idx_usage_records_workspace ON usage_records(workspace_id, created_at DESC);
+

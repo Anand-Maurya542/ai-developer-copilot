@@ -1,3 +1,3 @@
-export * from './client.js';
-export * from './migrate.js';
-export * from './seed.js';
+export * from './client';
+export * from './migrate';
+export * from './seed';

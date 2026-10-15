@@ -32,3 +32,4 @@ Adopt a **Modular Monolith in NestJS (TypeScript)** for the BFF / API, coupled v
 ## Consequences and Rollback Plan
 - Clean boundaries between modules enforced via TypeScript module imports.
 - Individual worker modules or API modules can be split into separate microservices later if scaling boundaries dictate.
+

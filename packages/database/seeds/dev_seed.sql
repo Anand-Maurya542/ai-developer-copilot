@@ -56,3 +56,4 @@ ON CONFLICT (repository_id, commit_sha, pipeline_version) DO NOTHING;
 UPDATE repositories
 SET active_snapshot_id = '00000000-0000-0000-0000-000000000005'
 WHERE id = '00000000-0000-0000-0000-000000000004';
+

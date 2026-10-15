@@ -1,10 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createDbPool } from './client.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { createDbPool } from './client';
 
 export async function runSeeds(): Promise<void> {
   const pool = createDbPool();
@@ -26,6 +22,6 @@ export async function runSeeds(): Promise<void> {
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (typeof require !== 'undefined' && require.main === module) {
   runSeeds();
 }

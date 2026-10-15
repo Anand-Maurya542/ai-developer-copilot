@@ -42,3 +42,4 @@ export interface JobStatusResponse {
   updatedAt: string;
   completedAt?: string | null;
 }
+

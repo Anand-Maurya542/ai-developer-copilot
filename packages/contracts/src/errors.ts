@@ -17,3 +17,4 @@ export interface ApiErrorPayload {
   correlationId: string;
   details?: Record<string, unknown>;
 }
+

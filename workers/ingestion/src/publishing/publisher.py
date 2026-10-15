@@ -76,3 +76,4 @@ class SnapshotPublisher:
                     )
                     self.conn.commit()
                 return False
+

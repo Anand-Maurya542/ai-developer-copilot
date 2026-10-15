@@ -73,3 +73,4 @@ jobs:
         run: |
           test -f packages/database/migrations/001_initial_schema.sql
           echo "Schema migration verified."
+

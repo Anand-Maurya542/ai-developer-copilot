@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@copilot/contracts": "workspace:*",
+    "@copilot/contracts": "*",
     "clsx": "^2.1.1",
     "lucide-react": "^0.395.0",
     "next": "14.2.4",
@@ -28,3 +28,4 @@
     "typescript": "^5.5.3"
   }
 }
+
