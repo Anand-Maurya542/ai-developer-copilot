@@ -1,0 +1,19 @@
+export enum ErrorCode {
+  AUTH_REQUIRED = 'AUTH_REQUIRED',
+  ACCESS_DENIED = 'ACCESS_DENIED',
+  RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND',
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  RATE_LIMITED = 'RATE_LIMITED',
+  JOB_ALREADY_RUNNING = 'JOB_ALREADY_RUNNING',
+  INDEX_NOT_READY = 'INDEX_NOT_READY',
+  PROVIDER_UNAVAILABLE = 'PROVIDER_UNAVAILABLE',
+  MODEL_TIMEOUT = 'MODEL_TIMEOUT',
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
+}
+
+export interface ApiErrorPayload {
+  code: ErrorCode;
+  message: string;
+  correlationId: string;
+  details?: Record<string, unknown>;
+}

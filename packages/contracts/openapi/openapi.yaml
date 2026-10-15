@@ -1,0 +1,313 @@
+openapi: 3.1.0
+info:
+  title: AI-Powered Developer Copilot API
+  version: 1.0.0
+  description: API for repository intelligence, hybrid RAG Q&A, and PR intelligence.
+
+servers:
+  - url: http://localhost:4000/v1
+    description: Local development API server
+
+paths:
+  /me:
+    get:
+      summary: Get current authenticated user and workspaces
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: User profile and associated workspaces
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /workspaces/{wid}/repositories:
+    get:
+      summary: List repositories connected to workspace
+      operationId: listRepositories
+      parameters:
+        - name: wid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of connected repositories
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      summary: Connect a repository to workspace
+      operationId: connectRepository
+      parameters:
+        - name: wid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - installationId
+                - githubRepoId
+                - fullName
+              properties:
+                installationId:
+                  type: integer
+                githubRepoId:
+                  type: integer
+                fullName:
+                  type: string
+                defaultBranch:
+                  type: string
+                  default: main
+      responses:
+        '201':
+          description: Repository connected and indexing enqueued
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /repositories/{rid}:
+    get:
+      summary: Get repository metadata and active snapshot
+      operationId: getRepository
+      parameters:
+        - name: rid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Repository detail
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Disconnect repository and schedule data deletion
+      operationId: deleteRepository
+      parameters:
+        - name: rid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '202':
+          description: Disconnect and purge initiated
+
+  /repositories/{rid}/index:
+    post:
+      summary: Request repository indexing (async job)
+      operationId: triggerIndexing
+      parameters:
+        - name: rid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ref:
+                  type: string
+                  default: refs/heads/main
+                commitSha:
+                  type: string
+                reason:
+                  type: string
+                  enum: [manual_reindex, webhook_push, initial_connect]
+                  default: manual_reindex
+      responses:
+        '202':
+          description: Indexing job accepted and enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId:
+                    type: string
+                    format: uuid
+                  repositoryId:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                    example: QUEUED
+
+  /jobs/{jid}:
+    get:
+      summary: Get asynchronous job status and safe diagnostics
+      operationId: getJobStatus
+      parameters:
+        - name: jid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job status and progress
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /repositories/{rid}/chat:
+    post:
+      summary: Ask a repository-grounded question with streaming SSE response
+      operationId: chatWithRepository
+      parameters:
+        - name: rid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - question
+              properties:
+                question:
+                  type: string
+                snapshotId:
+                  type: string
+                  format: uuid
+                conversationId:
+                  type: string
+                  format: uuid
+                stream:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Streaming SSE events (answer.start, answer.delta, answer.citation, answer.complete)
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '409':
+          description: Index not ready or snapshot invalid
+
+  /conversations/{cid}:
+    get:
+      summary: Read conversation message history with citations
+      operationId: getConversation
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Conversation history with verified citations
+
+  /github/webhooks:
+    post:
+      summary: Receive and verify GitHub App webhooks
+      operationId: handleWebhook
+      parameters:
+        - name: X-Hub-Signature-256
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: X-GitHub-Event
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: X-GitHub-Delivery
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Webhook acknowledged
+
+components:
+  responses:
+    Unauthorized:
+      description: Authentication required or session expired
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Caller not authorized for this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found or hidden by policy
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+        - correlationId
+      properties:
+        code:
+          type: string
+          enum:
+            - AUTH_REQUIRED
+            - ACCESS_DENIED
+            - RESOURCE_NOT_FOUND
+            - VALIDATION_ERROR
+            - RATE_LIMITED
+            - JOB_ALREADY_RUNNING
+            - INDEX_NOT_READY
+            - PROVIDER_UNAVAILABLE
+            - MODEL_TIMEOUT
+            - INTERNAL_ERROR
+        message:
+          type: string
+        correlationId:
+          type: string

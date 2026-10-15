@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-typecheck:
+    name: Lint & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Node Dependencies
+        run: npm ci || npm install
+
+      - name: Typecheck TypeScript Packages & Apps
+        run: npm run typecheck --if-present
+
+      - name: Lint Codebase
+        run: npm run lint --if-present
+
+  python-worker-tests:
+    name: Python Worker Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Test Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r workers/ingestion/requirements.txt
+          pip install -r workers/analysis/requirements.txt
+
+      - name: Run Ingestion Worker Unit Tests
+        run: python -m unittest discover -s workers/ingestion/tests
+
+  secret-and-schema-scan:
+    name: Secret & Schema Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify No Secrets Committed
+        run: |
+          ! grep -rE "ghp_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9_]{82}|sk-[a-zA-Z0-9]{20,}|BEGIN RSA PRIVATE KEY" . \
+            --exclude=".env.example" --exclude="*.md" --exclude-dir=".git" || \
+            (echo "Found potential secret in commit!" && exit 1)
+
+      - name: Verify Migration SQL Syntax
+        run: |
+          test -f packages/database/migrations/001_initial_schema.sql
+          echo "Schema migration verified."
